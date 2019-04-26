@@ -974,6 +974,17 @@ static iTermController *gSharedInstance;
     return aDict;
 }
 
+- (Profile *)defaultDarkBookmark {
+    Profile *aDict = [[ProfileModel sharedInstance] defaultDarkBookmark];
+    if (!aDict) {
+        NSMutableDictionary *temp = [[[NSMutableDictionary alloc] init] autorelease];
+        [ITAddressBookMgr setDefaultsInBookmark:temp];
+        [temp setObject:[ProfileModel freshGuid] forKey:KEY_GUID];
+        aDict = temp;
+    }
+    return aDict;
+}
+
 - (PseudoTerminal *)openTmuxIntegrationWindowUsingProfile:(Profile *)profile {
     [iTermController switchToSpaceInBookmark:profile];
     iTermWindowType windowType;

@@ -46,6 +46,7 @@ typedef struct {
 @interface ProfileModel : NSObject {
     NSMutableArray* bookmarks_;
     NSString* defaultBookmarkGuid_;
+    NSString* defaultDarkBookmarkGuid_;
 
     // The journal is an array of actions since the last change notification was
     // posted.
@@ -92,6 +93,7 @@ typedef struct {
 - (NSArray*)rawData;
 - (void)load:(NSArray*)prefs;
 - (Profile*)defaultBookmark;
+- (Profile*)defaultDarkBookmark;
 - (Profile*)bookmarkWithName:(NSString*)name;
 - (Profile*)bookmarkWithGuid:(NSString*)guid;
 - (int)indexOfBookmarkWithName:(NSString*)name;
@@ -100,6 +102,7 @@ typedef struct {
 - (Profile*)setObject:(id)object forKey:(NSString*)key inBookmark:(Profile*)bookmark;
 - (Profile *)setObjectsFromDictionary:(NSDictionary *)dictionary inProfile:(Profile *)bookmark;
 - (void)setDefaultByGuid:(NSString*)guid;
+- (void)setDefaultDarkByGuid:(NSString*)guid;
 - (void)moveGuid:(NSString*)guid toRow:(int)row;
 - (void)rebuildMenus;
 // Return the absolute index of a bookmark given its index with the filter applied.
@@ -142,7 +145,8 @@ typedef enum {
     JOURNAL_ADD,
     JOURNAL_REMOVE,
     JOURNAL_REMOVE_ALL,
-    JOURNAL_SET_DEFAULT
+    JOURNAL_SET_DEFAULT,
+    JOURNAL_SET_DEFAULT_DARK
 } JournalAction;
 
 @interface BookmarkJournalEntry : NSObject {

@@ -572,11 +572,13 @@ const CGFloat kDefaultTagsWidth = 80;
                                                     tags:@[ @"Mj" ]
                                                 selected:NO
                                                isDefault:YES
+                                            isDefaultDark:NO
                                                   filter:nil] heightForWidth:100] + [self extraHeightWithTags:YES];
         _heightWithoutTags = [[self attributedStringForName:@"Mj"
                                                        tags:nil
                                                    selected:NO
                                                   isDefault:YES
+                                                isDefaultDark:NO
                                                      filter:nil] heightForWidth:100] + [self extraHeightWithTags:NO];
         _haveHeights = YES;
     }
@@ -669,6 +671,7 @@ const CGFloat kDefaultTagsWidth = 80;
                                            tags:(NSArray *)tags
                                        selected:(BOOL)selected
                                       isDefault:(BOOL)isDefault
+                                  isDefaultDark:(BOOL)isDefaultDark
                                          filter:(NSString *)filter {
     NSColor *highlightedBackgroundColor = [NSColor colorWithCalibratedRed:1 green:1 blue:0 alpha:0.4];
 
@@ -710,6 +713,12 @@ const CGFloat kDefaultTagsWidth = 80;
         [theAttributedString insertAttributedString:star atIndex:0];
     }
 
+    if (isDefaultDark) {
+        NSAttributedString *star = [[[NSAttributedString alloc] initWithString:@"✪ "
+                                                                    attributes:plainAttributes] autorelease];
+        [theAttributedString insertAttributedString:star atIndex:0];
+    }
+    
     if (tags.count) {
         NSAttributedString *newline = [[[NSAttributedString alloc] initWithString:@"\n"
                                                                        attributes:plainAttributes] autorelease];
@@ -798,11 +807,13 @@ const CGFloat kDefaultTagsWidth = 80;
         DLog(@"Getting name of profile at row %d. The dictionary's address is %p. Its name is %@",
              (int)rowIndex, bookmark, bookmark[KEY_NAME]);
         Profile *defaultProfile = [[ProfileModel sharedInstance] defaultBookmark];
+        Profile *defaultDarkProfile = [[ProfileModel sharedInstance] defaultDarkBookmark];
         *multilinePtr = [bookmark[KEY_TAGS] count] > 0;
         return [self attributedStringForName:bookmark[KEY_NAME] ?: @""
                                         tags:bookmark[KEY_TAGS]
                                     selected:[[tableView_ selectedRowIndexes] containsIndex:rowIndex]
                                    isDefault:[bookmark[KEY_GUID] isEqualToString:defaultProfile[KEY_GUID]]
+                                   isDefaultDark:[bookmark[KEY_GUID] isEqualToString:defaultDarkProfile[KEY_GUID]]
                                       filter:[searchField_ stringValue]];
     } else if (aTableColumn == commandColumn_) {
         NSString *theString = nil;

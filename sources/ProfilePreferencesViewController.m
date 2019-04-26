@@ -694,6 +694,16 @@ andEditComponentWithIdentifier:(NSString *)identifier
     [[ProfileModel sharedInstance] setDefaultByGuid:guid];
 }
 
+- (IBAction)setAsDefaultDark:(id)sender {
+    Profile *origProfile = [self selectedProfile];
+    NSString* guid = origProfile[KEY_GUID];
+    if (!guid) {
+        NSBeep();
+        return;
+    }
+    [[ProfileModel sharedInstance] setDefaultDarkByGuid:guid];
+}
+
 - (NSString *)jsonForProfile:(Profile *)profile error:(NSError **)error {
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[profile it_jsonSafeValue]
                                                        options:NSJSONWritingPrettyPrinted

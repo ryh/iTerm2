@@ -73,6 +73,7 @@ int gMigrated;
         _modelName = [modelName copy];
         bookmarks_ = [[NSMutableArray alloc] init];
         defaultBookmarkGuid_ = @"";
+        defaultDarkBookmarkGuid_ = @"";
         journal_ = [[NSMutableArray alloc] init];
     }
     return self;
@@ -523,6 +524,11 @@ int gMigrated;
         isDefault = YES;
     }
 
+    BOOL isDefaultDark = NO;
+    if ([[orig objectForKey:KEY_GUID] isEqualToString:defaultDarkBookmarkGuid_]) {
+        isDefaultDark = YES;
+    }
+    
     Profile* before = [bookmarks_ objectAtIndex:i];
     BOOL needJournal = [self bookmark:bookmark differsJournalablyFrom:before];
     if (needJournal) {
@@ -536,6 +542,9 @@ int gMigrated;
     }
     if (isDefault) {
         [self setDefaultByGuid:[bookmark objectForKey:KEY_GUID]];
+    }
+    if (isDefaultDark) {
+        [self setDefaultDarkByGuid:[bookmark objectForKey:KEY_GUID]];
     }
     if (needJournal) {
         [self postChangeNotification];
@@ -554,6 +563,7 @@ int gMigrated;
 {
     [bookmarks_ removeAllObjects];
     defaultBookmarkGuid_ = @"";
+    defaultDarkBookmarkGuid_ = @"";
     [journal_ addObject:[BookmarkJournalEntry journalWithAction:JOURNAL_REMOVE_ALL bookmark:nil model:self]];
     [self postChangeNotification];
 }
@@ -602,6 +612,11 @@ int gMigrated;
 - (Profile*)defaultBookmark
 {
     return [self bookmarkWithGuid:defaultBookmarkGuid_];
+}
+
+- (Profile*)defaultDarkBookmark
+{
+    return [self bookmarkWithGuid:defaultDarkBookmarkGuid_];
 }
 
 - (Profile*)bookmarkWithName:(NSString*)name
@@ -683,6 +698,20 @@ int gMigrated;
     }
     [journal_ addObject:[BookmarkJournalEntry journalWithAction:JOURNAL_SET_DEFAULT
                                                        bookmark:[self defaultBookmark]
+                                                          model:self]];
+    [self postChangeNotification];
+}
+
+- (void)setDefaultDarkByGuid:(NSString*)guid
+{
+    [guid retain];
+    [defaultDarkBookmarkGuid_ release];
+    defaultDarkBookmarkGuid_ = guid;
+    if (prefs_) {
+        [prefs_ setObject:defaultDarkBookmarkGuid_ forKey:KEY_DEFAULT_DARK_GUID];
+    }
+    [journal_ addObject:[BookmarkJournalEntry journalWithAction:JOURNAL_SET_DEFAULT_DARK
+                                                       bookmark:[self defaultDarkBookmark]
                                                           model:self]];
     [self postChangeNotification];
 }
@@ -1151,6 +1180,10 @@ int gMigrated;
                 break;
 
             case JOURNAL_SET_DEFAULT:
+                [ProfileModel applySetDefaultJournalEntry:e toMenu:menu startingAtItem:skip params:params];
+                break;
+
+            case JOURNAL_SET_DEFAULT_DARK:
                 [ProfileModel applySetDefaultJournalEntry:e toMenu:menu startingAtItem:skip params:params];
                 break;
 
