@@ -572,13 +572,13 @@ const CGFloat kDefaultTagsWidth = 80;
                                                     tags:@[ @"Mj" ]
                                                 selected:NO
                                                isDefault:YES
-                                            isDefaultDark:NO
+                                           isDefaultDark:NO
                                                   filter:nil] heightForWidth:100] + [self extraHeightWithTags:YES];
         _heightWithoutTags = [[self attributedStringForName:@"Mj"
                                                        tags:nil
                                                    selected:NO
                                                   isDefault:YES
-                                                isDefaultDark:NO
+                                              isDefaultDark:NO
                                                      filter:nil] heightForWidth:100] + [self extraHeightWithTags:NO];
         _haveHeights = YES;
     }
@@ -813,7 +813,7 @@ const CGFloat kDefaultTagsWidth = 80;
                                         tags:bookmark[KEY_TAGS]
                                     selected:[[tableView_ selectedRowIndexes] containsIndex:rowIndex]
                                    isDefault:[bookmark[KEY_GUID] isEqualToString:defaultProfile[KEY_GUID]]
-                                   isDefaultDark:[bookmark[KEY_GUID] isEqualToString:defaultDarkProfile[KEY_GUID]]
+                               isDefaultDark:[bookmark[KEY_GUID] isEqualToString:defaultDarkProfile[KEY_GUID]]
                                       filter:[searchField_ stringValue]];
     } else if (aTableColumn == commandColumn_) {
         NSString *theString = nil;
